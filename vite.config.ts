@@ -27,6 +27,14 @@ export default defineConfig({
     strictPort: true,
     // TODO: Causing issue while loading assets using alias
     // origin: 'http://0.0.0.0:4000',
+
+    proxy: {
+      '/api': {
+        target: 'https://api.stlouisfed.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
 
   //change port for production
@@ -43,4 +51,6 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+
+  
 });

@@ -25,12 +25,12 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*", "./dist/*", ""],
-      "@assets/*": ["./src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@pages/*": ["src/pages/*"],
-      "@routes/*": ["src/router/*"],
-      "@utils/*": ["utils/*"]
+      // "@/*": ["./src/*", "./dist/*", ""],
+      // "@assets/*": ["./src/assets/*"],
+      // "@components/*": ["src/components/*"],
+      // "@pages/*": ["src/pages/*"],
+      // "@routes/*": ["src/router/*"],
+      // "@utils/*": ["utils/*"]
     }
   },
   "include": ["src/**/*"],
