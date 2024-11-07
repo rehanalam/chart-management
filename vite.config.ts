@@ -4,8 +4,6 @@ import { defineConfig } from 'vite';
 import Checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 
-
-
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
@@ -18,7 +16,7 @@ export default defineConfig({
       project: 'bb-freight-web',
       reactComponentAnnotation: { enabled: true },
     }),
-    Checker({ typescript: true })
+    Checker({ typescript: true }),
   ],
 
   // for dev
@@ -27,13 +25,8 @@ export default defineConfig({
     strictPort: true,
     // TODO: Causing issue while loading assets using alias
     // origin: 'http://0.0.0.0:4000',
-
     proxy: {
-      '/api': {
-        target: 'https://api.stlouisfed.org',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
+      '/api': 'http://localhost:8000',
     },
   },
 
@@ -44,13 +37,9 @@ export default defineConfig({
   },
 
   //paths for typescript
-  resolve: {
-    
-  },
+  resolve: {},
 
   build: {
     sourcemap: true,
   },
-
-  
 });

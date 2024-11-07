@@ -3,10 +3,19 @@ import combinedReducers from './combinedReducers';
 import AxiosModule from '../utils/modules/api';
 import type { Action, ThunkAction, ThunkMiddleware } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
-import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore,
+} from 'redux-persist';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import storage from 'redux-persist/lib/storage';
-import { fredCategoriesApi } from './rootApis';
+import { fredCategoriesApi, fredSeriesApi } from './rootApis';
 
 const persistConfig = {
   key: 'root',
@@ -15,11 +24,15 @@ const persistConfig = {
 };
 
 export type StoreState = ReturnType<typeof combinedReducers>;
-const persistedReducer = persistReducer<StoreState>(persistConfig, combinedReducers);
+const persistedReducer = persistReducer<StoreState>(
+  persistConfig,
+  combinedReducers
+);
 
 const middlewares: ThunkMiddleware[] = [
   // Api.middleware goes here
-  fredCategoriesApi.middleware
+  fredCategoriesApi.middleware,
+  fredSeriesApi.middleware,
 ];
 export const purgePersistedState = () => persistedStore.purge();
 
@@ -36,10 +49,9 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(middlewares),
- 
+
   // preloadedState,
 });
-
 
 // inject store to api
 AxiosModule.Utils.injectStore(store);
@@ -50,4 +62,9 @@ export const persistedStore = persistStore(store);
 export type AppStore = typeof store;
 // Infer the `AppDispatch` type from the store itself
 export type AppDispatch = AppStore['dispatch'];
-export type AppThunk<ThunkReturnType = void> = ThunkAction<ThunkReturnType, StoreState, unknown, Action>;
+export type AppThunk<ThunkReturnType = void> = ThunkAction<
+  ThunkReturnType,
+  StoreState,
+  unknown,
+  Action
+>;

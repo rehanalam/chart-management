@@ -1,7 +1,7 @@
 import EnvModule from './env';
 import { BaseQueryFn } from '@reduxjs/toolkit/query';
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
-import { AppStore } from 'src/redux/store';
+import { AppStore } from '../../redux/store';
 
 namespace AxiosModule {
   let store: AppStore;
@@ -101,7 +101,7 @@ namespace AxiosModule {
 
     export const _axios: AxiosInstance = axios.create({
       //application host
-      baseURL: '/api',
+      baseURL: EnvModule.MAIN_API,
       timeout: 30000,
     });
 
@@ -126,7 +126,10 @@ namespace AxiosModule {
         try {
           // base query at a core level
           const res = await _axios({
-            url: (extraOptions?.alternativeContextUrl ? extraOptions.alternativeContextUrl : contextUrl) + url,
+            url:
+              (extraOptions?.alternativeContextUrl
+                ? extraOptions.alternativeContextUrl
+                : contextUrl) + url,
             method,
             data,
             params,
@@ -139,7 +142,8 @@ namespace AxiosModule {
           return {
             error: {
               status: err.response?.status,
-              data: err.response?.data || 'Unknown error. please contact support',
+              data:
+                err.response?.data || 'Unknown error. please contact support',
             },
           };
         }

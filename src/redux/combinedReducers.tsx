@@ -1,9 +1,10 @@
-
 import { combineReducers } from '@reduxjs/toolkit';
 import fredCategoriesApi from './fredCategories/api';
+import { fredSeriesApi } from './rootApis';
 
 const combinedReducers = combineReducers({
-  fredApi: fredCategoriesApi.reducer
+  fredCategoriesApi: fredCategoriesApi.reducer,
+  fredSeriesApi: fredSeriesApi.reducer,
   // api: api.reducer
 });
 

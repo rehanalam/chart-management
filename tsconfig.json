@@ -23,15 +23,15 @@
     "forceConsistentCasingInFileNames": true,
 
     /* Paths */
-    "baseUrl": ".",
-    "paths": {
-      // "@/*": ["./src/*", "./dist/*", ""],
-      // "@assets/*": ["./src/assets/*"],
-      // "@components/*": ["src/components/*"],
-      // "@pages/*": ["src/pages/*"],
-      // "@routes/*": ["src/router/*"],
-      // "@utils/*": ["utils/*"]
-    }
+    "baseUrl": "."
+    // "paths": {
+    //   "@/*": ["./src/*", "./dist/*", ""],
+    //   "@assets/*": ["./src/assets/*"],
+    //   "@components/*": ["src/components/*"],
+    //   "@pages/*": ["src/pages/*"],
+    //   "@routes/*": ["src/router/*"],
+    //   "@utils/*": ["utils/*"]
+    // }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build"],
