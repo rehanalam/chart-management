@@ -48,7 +48,7 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
       } else {
         setOptions([]);
       }
-    }, 300),
+    }, 500),
     [getFredSeries]
   );
 

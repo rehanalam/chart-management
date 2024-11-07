@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import AxiosModule from '../../utils/modules/api';
 import EnvModule from '../../utils/modules/env';
+import { IObservationsSettingsFormValues } from 'src/components/AddChartModal';
 
 export const fredSeriesApi = createApi({
   reducerPath: 'fredSeriesApi',
@@ -15,11 +16,12 @@ export const fredSeriesApi = createApi({
 
     getFredObservationsById: builder.mutation<
       SeriesModule.IFredSeriesResponse,
-      string
+      IObservationsSettingsFormValues
     >({
-      query: (seriesId) => ({
-        method: 'GET',
-        url: `/observations?series_id=${seriesId}`,
+      query: (body) => ({
+        method: 'POST',
+        url: `/observations`,
+        data: { ...body },
       }),
     }),
   }),

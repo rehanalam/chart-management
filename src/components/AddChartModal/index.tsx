@@ -14,6 +14,10 @@ export interface ISeriesSearchFormValues {
 
 export interface IObservationsSettingsFormValues {
   seriesId: string;
+  frequency: string;
+  units: string;
+  limit: string;
+  observation_period: string;
 }
 
 const AddChartModal: React.FC = () => {
@@ -21,7 +25,8 @@ const AddChartModal: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [seriesSearchForm] = Form.useForm<ISeriesSearchFormValues>();
-  const [observationsSettingsForm] = Form.useForm<ISeriesSearchFormValues>();
+  const [observationsSettingsForm] =
+    Form.useForm<IObservationsSettingsFormValues>();
 
   const showModal = () => {
     setIsModalOpen(true);
