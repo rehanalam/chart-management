@@ -1,8 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { observationMockData } from './observations.const';
+import SeriesModule from 'src/utils/modules/series';
 
 const seriesObservationsState: {
-  observationChartsData: SeriesModule.IObservationResponse[];
+  observationChartsData: SeriesModule.IObservationState[];
 } = {
   observationChartsData: [observationMockData],
 };
@@ -11,24 +12,42 @@ export const seriesObservationsSlice = createSlice({
   name: 'seriesObservations',
   initialState: seriesObservationsState,
   reducers: {
-    updateObservations: (
+    addObservations: (
       state,
-      { payload }: { payload: SeriesModule.IObservationResponse }
+      action: PayloadAction<SeriesModule.IObservationState>
     ) => {
-      state.observationChartsData.unshift(payload);
+      state.observationChartsData.unshift(action.payload);
     },
 
-    removeObservations: (
+    updateObservations: (
       state,
-      { payload }: { payload: { chartId: string } }
+      action: PayloadAction<{
+        id: string;
+        updatedData: Partial<SeriesModule.IObservationState>;
+      }>
     ) => {
+      const { id, updatedData } = action.payload;
+      const index = state.observationChartsData.findIndex(
+        (observation) => observation.id === id
+      );
+
+      if (index !== -1) {
+        // Update the specific observation with new data
+        state.observationChartsData[index] = {
+          ...state.observationChartsData[index],
+          ...updatedData,
+        };
+      }
+    },
+
+    removeObservations: (state, action: PayloadAction<{ chartId: string }>) => {
       state.observationChartsData = state.observationChartsData.filter(
-        (observation) => observation.id !== payload.chartId
+        (observation) => observation.id !== action.payload.chartId
       );
     },
   },
 });
 
-export const { updateObservations, removeObservations } =
+export const { addObservations, updateObservations, removeObservations } =
   seriesObservationsSlice.actions;
 export default seriesObservationsSlice.reducer;

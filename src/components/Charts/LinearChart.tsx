@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import SeriesModule from 'src/utils/modules/series';
 
 // Register the necessary components
 ChartJS.register(

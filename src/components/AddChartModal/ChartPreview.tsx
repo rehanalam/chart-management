@@ -21,10 +21,11 @@ import {
 } from './ObservationSettings';
 import { LoadingOutlined } from '@ant-design/icons';
 import ReduxModule from '../../utils/modules/redux';
-import { updateObservations } from '../../redux/rootSlices';
+import { addObservations, updateObservations } from '../../redux/rootSlices';
 import ChartSettingsForm from './ChartSettingsForm';
 import ChartComponent from '../Charts';
 import { generateRandomId } from '../../utils/common';
+import SeriesModule from 'src/utils/modules/series';
 
 ChartJS.register(
   CategoryScale,
@@ -37,27 +38,35 @@ ChartJS.register(
 );
 
 interface IChartPreviewProps {
+  isEdit: boolean;
   seriesId: string;
   formData: IObservationsSettingsFormValues | null;
   seriesData?: SeriesModule.IFredSeriesResponse;
+  defaultChartData?: SeriesModule.IObservationState;
   onScreenChange: (screen: ScreenEnum) => void;
   onCloseModal?: () => void;
 }
 
 const ChartPreview = ({
+  isEdit,
   formData,
   seriesId,
   seriesData,
+  defaultChartData,
   onScreenChange,
   onCloseModal,
 }: IChartPreviewProps) => {
-  const [chartSettings, setChartSettings] = useState({
-    title: seriesData?.seriess?.[0]?.title || 'Value Over Time',
-    yAxisLabel: seriesData?.seriess?.[0]?.units || 'Y axis',
-    lineColor: '#4bc0c0',
-    lineStyle: 'solid',
-    chartType: 'line',
-  });
+  const [chartSettings, setChartSettings] = useState(
+    defaultChartData
+      ? defaultChartData.chartSettings
+      : {
+          title: seriesData?.seriess?.[0]?.title || 'Value Over Time',
+          yAxisLabel: seriesData?.seriess?.[0]?.units || 'Y axis',
+          lineColor: '#4bc0c0',
+          lineStyle: 'solid',
+          chartType: 'line',
+        }
+  );
 
   const dispatch = ReduxModule.useAppDispatch();
 
@@ -78,15 +87,37 @@ const ChartPreview = ({
     }
   };
 
-  const onAddChartClick = async () => {
-    if (observationResp) {
+  const onEditChartClick = async () => {
+    if (defaultChartData && observationResp && formData) {
       await dispatch(
         updateObservations({
+          id: defaultChartData?.id,
+          updatedData: {
+            ...observationResp,
+            chartSettings,
+            id: generateRandomId(),
+            seriesId,
+            observationSettings: formData,
+          },
+        })
+      );
+    }
+    onCloseModal?.();
+    onScreenChange(ScreenEnum.SEARCH);
+  };
+
+  const onAddChartClick = async () => {
+    if (observationResp && formData) {
+      await dispatch(
+        addObservations({
           ...observationResp,
           chartSettings,
           id: generateRandomId(),
+          seriesId,
+          observationSettings: formData,
         })
       );
+
       onCloseModal?.();
       onScreenChange(ScreenEnum.SEARCH);
     }
@@ -110,6 +141,8 @@ const ChartPreview = ({
           observationEnd,
           seriesId,
         });
+      } else {
+        message.error('Series ID unavailable');
       }
     }
   }, [formData]);
@@ -144,9 +177,15 @@ const ChartPreview = ({
         >
           Back
         </Button>
-        <Button type="primary" onClick={onAddChartClick}>
-          Add Chart
-        </Button>
+        {isEdit ? (
+          <Button type="primary" onClick={onEditChartClick}>
+            Edit Chart
+          </Button>
+        ) : (
+          <Button type="primary" onClick={onAddChartClick}>
+            Add Chart
+          </Button>
+        )}
       </div>
     </div>
   );

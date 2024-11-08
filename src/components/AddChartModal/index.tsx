@@ -1,9 +1,21 @@
-import { useState } from 'react';
-import { Button, Form, message, Modal, Select, Spin } from 'antd';
+import { useEffect, useState } from 'react';
+import {
+  Button,
+  ButtonProps,
+  Form,
+  message,
+  Modal,
+  Select,
+  Spin,
+  Typography,
+} from 'antd';
 import SeriesSearchForm from './SeriesSearchForm';
 import ObservationSettingsForm from './ObservationSettings';
 import ChartPreview from './ChartPreview';
 import { useGetFredSeriesQuery } from '../../redux/fredSeries/api';
+import { ButtonType } from 'antd/es/button';
+import SeriesModule from 'src/utils/modules/series';
+import dayjs, { Dayjs } from 'dayjs';
 
 export enum ScreenEnum {
   SEARCH = 'search',
@@ -16,27 +28,32 @@ export interface ISeriesSearchFormValues {
 }
 
 export interface IObservationsSettingsFormValues {
-  seriesId: string;
   frequency: string;
   units: string;
   limit: string;
-  observationPeriod: string;
-  graphTitle: string;
+  observationPeriod: [Dayjs, Dayjs];
 }
 
 interface IAddChartModalProp {
-  btnText?: string;
+  isEdit?: boolean;
+  defaultChartData?: SeriesModule.IObservationState;
 }
 
-const AddChartModal = ({ btnText }: IAddChartModalProp) => {
-  const [screen, setScreen] = useState<ScreenEnum>(ScreenEnum.SEARCH);
+const AddChartModal = ({
+  isEdit = false,
+  defaultChartData,
+}: IAddChartModalProp) => {
+  const [screen, setScreen] = useState<ScreenEnum>(
+    defaultChartData?.id ? ScreenEnum.SETTINGS : ScreenEnum.SEARCH
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [seriesSearchForm] = Form.useForm<ISeriesSearchFormValues>();
   const [observationsSettingsForm] =
     Form.useForm<IObservationsSettingsFormValues>();
 
-  const seriesId = seriesSearchForm.getFieldValue('seriesId');
+  const seriesId =
+    seriesSearchForm.getFieldValue('seriesId') || defaultChartData?.seriesId;
 
   const { data: seriesData, isLoading } = useGetFredSeriesQuery(
     seriesId || '',
@@ -45,6 +62,19 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
       refetchOnMountOrArgChange: true,
     }
   );
+
+  useEffect(() => {
+    if (defaultChartData) {
+      seriesSearchForm.setFieldValue(seriesId, defaultChartData.seriesId);
+      observationsSettingsForm.setFieldsValue({
+        ...defaultChartData.observationSettings,
+        observationPeriod: [
+          dayjs(defaultChartData.observationSettings?.observationPeriod[0]),
+          dayjs(defaultChartData.observationSettings?.observationPeriod[1]),
+        ],
+      });
+    }
+  }, [defaultChartData]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -75,11 +105,13 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
       case ScreenEnum.CHART_PREVIEW:
         return (
           <ChartPreview
+            isEdit={isEdit}
             formData={observationsSettingsForm.getFieldsValue() || null}
             seriesId={seriesId || null}
+            seriesData={seriesData}
+            defaultChartData={defaultChartData}
             onScreenChange={onScreenChange}
             onCloseModal={handleCancel}
-            seriesData={seriesData}
           />
         );
       default:
@@ -125,12 +157,16 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
         ];
     }
   };
-
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        {btnText ? btnText : 'Create Chart'}
-      </Button>
+      {isEdit ? (
+        <Typography.Text onClick={showModal}>Edit Chart</Typography.Text>
+      ) : (
+        <Button type="primary" onClick={showModal}>
+          Create Chart
+        </Button>
+      )}
+
       <Modal
         open={isModalOpen}
         onCancel={handleCancel}

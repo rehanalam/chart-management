@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Line } from '@ant-design/charts';
+import SeriesModule from 'src/utils/modules/series';
 
 interface ILinearChartProps {
   observationData: SeriesModule.IObservationResponse;

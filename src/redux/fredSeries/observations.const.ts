@@ -51,4 +51,5 @@ export const observationMockData = {
     lineStyle: 'solid',
     chartType: 'line',
   },
+  seriesId: 'qweqe',
 };

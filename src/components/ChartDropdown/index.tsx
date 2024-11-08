@@ -1,11 +1,13 @@
 import { MoreOutlined } from '@ant-design/icons';
 import { Button, Dropdown, MenuProps, Modal } from 'antd';
-import { removeObservations, updateObservations } from '../../redux/rootSlices';
+import { removeObservations, addObservations } from '../../redux/rootSlices';
 import ReduxModule from '../../utils/modules/redux';
 import { generateRandomId } from '../../utils/common';
+import AddChartModal from '../AddChartModal';
+import SeriesModule from 'src/utils/modules/series';
 
 interface IChartDropdownProps {
-  chartData: SeriesModule.IObservationResponse;
+  chartData: SeriesModule.IObservationState;
 }
 
 const ChartDropdown = ({ chartData }: IChartDropdownProps) => {
@@ -20,7 +22,6 @@ const ChartDropdown = ({ chartData }: IChartDropdownProps) => {
   const handleRemoveChart = () => {
     Modal.confirm({
       title: 'Are you sure you want to delete this chart?',
-      content: 'This action cannot be undone.',
       okText: 'Yes, Delete',
       okType: 'danger',
       cancelText: 'Cancel',
@@ -33,15 +34,14 @@ const ChartDropdown = ({ chartData }: IChartDropdownProps) => {
       // Create a new chart object with a new unique ID
       const duplicatedChart = { ...chartData, id: generateRandomId() };
       // Dispatch the update action to add the duplicated chart to the list
-      await dispatch(updateObservations(duplicatedChart));
+      await dispatch(addObservations(duplicatedChart));
     }
   };
 
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: 'Edit Chart',
-      onClick: () => console.log('hello'),
+      label: <AddChartModal isEdit={true} defaultChartData={chartData} />,
     },
     {
       key: '2',

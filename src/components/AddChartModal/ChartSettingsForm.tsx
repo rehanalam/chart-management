@@ -1,6 +1,7 @@
 import { Form, Input, Select } from 'antd';
 import { debounce } from 'lodash';
 import { useCallback, useEffect } from 'react';
+import SeriesModule from 'src/utils/modules/series';
 
 interface IChartSettingsFormProps {
   settings: SeriesModule.IChartSettings;

@@ -21,6 +21,7 @@ const Dashboard = () => {
         {chartsData?.observationChartsData &&
           chartsData.observationChartsData.map((data, index) => (
             <Card
+              key={data.id}
               className="h-fit w-full"
               title={
                 <div className="flex justify-between items-center">

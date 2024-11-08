@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import AxiosModule from '../../utils/modules/api';
-import EnvModule from '../../utils/modules/env';
-import { IObservationsSettingsFormValues } from 'src/components/AddChartModal';
+import SeriesModule from 'src/utils/modules/series';
 
 export const fredSeriesApi = createApi({
   reducerPath: 'fredSeriesApi',

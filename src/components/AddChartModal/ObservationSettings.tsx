@@ -9,6 +9,7 @@ import {
 import { IObservationsSettingsFormValues, ScreenEnum } from '.';
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';
+import SeriesModule from 'src/utils/modules/series';
 
 const { RangePicker } = DatePicker;
 
@@ -111,7 +112,7 @@ const ObservationSettingsForm = ({
           ></Select>
         </FormItem>
         <Form.Item
-          name="observation_period"
+          name="observationPeriod"
           label="Observation Period"
           rules={[{ required: true, message: 'Please select a date range' }]}
         >

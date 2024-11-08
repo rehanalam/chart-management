@@ -3,6 +3,7 @@ import { ISeriesSearchFormValues, ScreenEnum } from '.';
 import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useLazySearchFredSeriesQuery } from '../../redux/rootApis';
+import SeriesModule from 'src/utils/modules/series';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -17,17 +18,6 @@ interface ISelectOptions {
   value: string | number;
   description: string;
 }
-const predefinedFilters = [
-  'CPI',
-  'GDP',
-  'Inflation',
-  'Unemployment',
-  'M2',
-  'Real GDP',
-  'Unemployment Rate',
-  '30 Year Mortgage Interest Rate',
-  'M1',
-];
 
 const computeSelectOption = async (
   result: SeriesModule.IFredSeriesResponse

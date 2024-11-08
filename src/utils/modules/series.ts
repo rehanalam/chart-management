@@ -1,3 +1,5 @@
+import { IObservationsSettingsFormValues } from 'src/components/AddChartModal';
+
 namespace SeriesModule {
   export interface IChartSettings {
     title: string;
@@ -57,8 +59,13 @@ namespace SeriesModule {
     offset: number;
     limit: number;
     observations: IObservation[];
-    chartSettings?: IChartSettings;
-    id?: string;
+  }
+
+  export interface IObservationState extends IObservationResponse {
+    id: string;
+    seriesId: string;
+    chartSettings: IChartSettings;
+    observationSettings?: IObservationsSettingsFormValues;
   }
 
   export interface IObservationPayload {
@@ -70,3 +77,5 @@ namespace SeriesModule {
     observationEnd: string;
   }
 }
+
+export default SeriesModule;
