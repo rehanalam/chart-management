@@ -95,6 +95,7 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
         form={form}
         layout="vertical"
         className="py-6"
+        // TODO: For dev testing
         // initialValues={{ seriesId: 'GNPCA' }}
         onFinish={onFinish}
         name="series-search-form"
@@ -112,15 +113,11 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
             onSearch={handleSearch}
             className="w-full h-10"
             options={options.map((option) => ({
-              label: (
-                <>
-                  <Title level={5}>{option.label}</Title>
-                  <Paragraph>{option.description}</Paragraph>
-                </>
-              ),
+              label: option.label,
               value: option.value,
             }))}
             notFoundContent={loading ? <Spin className="p-4 mx-auto" /> : null}
+            allowClear={true}
           />
         </Form.Item>
       </Form>

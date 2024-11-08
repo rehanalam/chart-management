@@ -1,12 +1,7 @@
-import { Card, DatePicker, Typography } from 'antd';
-import {
-  useGetFredCategoryChildrenQuery,
-  useGetFredCategoryQuery,
-  useGetFredCategoryRelatedQuery,
-} from '../../redux/fredCategories/api';
+import { Card, Typography } from 'antd';
+
 import AddChartModal from '../AddChartModal';
 import ReduxModule from '../../utils/modules/redux';
-import LinearChart from '../Charts/LinearChart';
 import ChartDropdown from '../ChartDropdown';
 import ChartComponent from '../Charts';
 
@@ -29,7 +24,7 @@ const Dashboard = () => {
               className="h-fit w-full"
               title={
                 <div className="flex justify-between items-center">
-                  <Typography.Text ellipsis={true}>
+                  <Typography.Text ellipsis={true} className="w-[80%]">
                     {data.chartSettings?.title}
                   </Typography.Text>
                   <ChartDropdown chartData={data} />

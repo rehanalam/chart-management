@@ -20,16 +20,12 @@ import {
   UnitsEnum,
 } from './ObservationSettings';
 import { LoadingOutlined } from '@ant-design/icons';
-import LineChartAntd from '../Charts/LineChartAntd';
-import LinearChartNivo from '../Charts/LinearChartNivo';
 import ReduxModule from '../../utils/modules/redux';
 import { updateObservations } from '../../redux/rootSlices';
-import LinearChart from '../Charts/LinearChart';
 import ChartSettingsForm from './ChartSettingsForm';
 import ChartComponent from '../Charts';
 import { generateRandomId } from '../../utils/common';
 
-// Register the necessary components
 ChartJS.register(
   CategoryScale,
   LinearScale,

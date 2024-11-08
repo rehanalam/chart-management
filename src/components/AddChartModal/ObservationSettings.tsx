@@ -2,18 +2,13 @@ import {
   DatePicker,
   Form,
   FormInstance,
-  Input,
   InputNumber,
-  message,
   Select,
   Typography,
 } from 'antd';
-import { useGetFredSeriesQuery } from '../../redux/rootApis';
 import { IObservationsSettingsFormValues, ScreenEnum } from '.';
-import { useEffect } from 'react';
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';
-import ChartPreview from './ChartPreview';
 
 const { RangePicker } = DatePicker;
 

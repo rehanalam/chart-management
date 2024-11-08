@@ -1,6 +1,6 @@
-import { Form, Input, Select, Button, Typography } from 'antd';
+import { Form, Input, Select } from 'antd';
 import { debounce } from 'lodash';
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 interface IChartSettingsFormProps {
   settings: SeriesModule.IChartSettings;
@@ -54,6 +54,7 @@ const ChartSettingsForm = ({
       onSettingsChange(allValues);
     }
   };
+
   return (
     <Form
       form={form}

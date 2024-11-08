@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Line, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -12,7 +12,6 @@ import {
   Legend,
 } from 'chart.js';
 import dayjs from 'dayjs';
-import { color } from 'chart.js/helpers';
 
 // Register the necessary components
 ChartJS.register(
@@ -73,6 +72,7 @@ const ChartComponent = ({ observationData, settings }: IChartProps) => {
   const chartOptions = {
     title: {
       color: '#9ca3af',
+      display: false,
     },
     scales: {
       y: {

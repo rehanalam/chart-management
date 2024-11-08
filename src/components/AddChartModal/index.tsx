@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Form, message, Modal, Select } from 'antd';
+import { useState } from 'react';
+import { Button, Form, message, Modal, Select, Spin } from 'antd';
 import SeriesSearchForm from './SeriesSearchForm';
 import ObservationSettingsForm from './ObservationSettings';
 import ChartPreview from './ChartPreview';
@@ -38,10 +38,13 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
 
   const seriesId = seriesSearchForm.getFieldValue('seriesId');
 
-  const { data: seriesData } = useGetFredSeriesQuery(seriesId || '', {
-    skip: !seriesId,
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: seriesData, isLoading } = useGetFredSeriesQuery(
+    seriesId || '',
+    {
+      skip: !seriesId,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const showModal = () => {
     setIsModalOpen(true);
