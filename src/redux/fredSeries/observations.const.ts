@@ -1,4 +1,5 @@
 export const observationMockData = {
+  id: '12345',
   realtime_start: '2024-11-07',
   realtime_end: '2024-11-07',
   observation_start: '2020-07-01',

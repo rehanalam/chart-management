@@ -1,4 +1,4 @@
-import { DatePicker, Typography } from 'antd';
+import { Card, DatePicker, Typography } from 'antd';
 import {
   useGetFredCategoryChildrenQuery,
   useGetFredCategoryQuery,
@@ -15,23 +15,6 @@ const Dashboard = () => {
     (state) => state.seriesObservations
   );
 
-  // const { data: categoryData } = useGetFredCategoryQuery(undefined, {
-  //   refetchOnMountOrArgChange: true,
-  // });
-  // const { data: categoryChildData } = useGetFredCategoryChildrenQuery(
-  //   undefined,
-  //   {
-  //     refetchOnMountOrArgChange: true,
-  //   }
-  // );
-
-  // const { data: categoryRelatedData, isLoading } =
-  //   useGetFredCategoryRelatedQuery(undefined, {
-  //     refetchOnMountOrArgChange: true,
-  //   });
-
-  // console.log(categoryData);
-
   return (
     <div>
       <div className="flex border-b-2 border-b-blue-500 h-20 justify-between items-center px-10">
@@ -39,23 +22,28 @@ const Dashboard = () => {
         <AddChartModal />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 h-screen">
         {chartsData?.observationChartsData &&
           chartsData.observationChartsData.map((data, index) => (
-            <div key={index} className="p-8 bg-slate-100 rounded-3xl">
-              <div className="flex justify-between">
-                <ChartDropdown />
-              </div>
+            <Card
+              className="h-fit w-full"
+              title={
+                <div className="flex justify-between items-center">
+                  <Typography.Text ellipsis={true}>
+                    {data.chartSettings?.title}
+                  </Typography.Text>
+                  <ChartDropdown chartData={data} />
+                </div>
+              }
+              bordered={false}
+            >
               {data?.chartSettings && (
                 <ChartComponent
                   observationData={data}
                   settings={data.chartSettings}
                 />
               )}
-              {/* <div className="pt-4">
-                <AddChartModal btnText="Edit Chart" />
-              </div> */}
-            </div>
+            </Card>
           ))}
       </div>
     </div>

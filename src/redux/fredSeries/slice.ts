@@ -15,10 +15,20 @@ export const seriesObservationsSlice = createSlice({
       state,
       { payload }: { payload: SeriesModule.IObservationResponse }
     ) => {
-      state.observationChartsData.push(payload);
+      state.observationChartsData.unshift(payload);
+    },
+
+    removeObservations: (
+      state,
+      { payload }: { payload: { chartId: string } }
+    ) => {
+      state.observationChartsData = state.observationChartsData.filter(
+        (observation) => observation.id !== payload.chartId
+      );
     },
   },
 });
 
-export const { updateObservations } = seriesObservationsSlice.actions;
+export const { updateObservations, removeObservations } =
+  seriesObservationsSlice.actions;
 export default seriesObservationsSlice.reducer;

@@ -27,6 +27,7 @@ import { updateObservations } from '../../redux/rootSlices';
 import LinearChart from '../Charts/LinearChart';
 import ChartSettingsForm from './ChartSettingsForm';
 import ChartComponent from '../Charts';
+import { generateRandomId } from '../../utils/common';
 
 // Register the necessary components
 ChartJS.register(
@@ -70,6 +71,7 @@ const ChartPreview = ({
   const getObservations = async (body: SeriesModule.IObservationPayload) => {
     try {
       const resp = await getObservationsById(body).unwrap();
+
       setChartSettings({
         ...chartSettings,
         yAxisLabel:
@@ -82,7 +84,13 @@ const ChartPreview = ({
 
   const onAddChartClick = async () => {
     if (observationResp) {
-      await dispatch(updateObservations({ ...observationResp, chartSettings }));
+      await dispatch(
+        updateObservations({
+          ...observationResp,
+          chartSettings,
+          id: generateRandomId(),
+        })
+      );
       onCloseModal?.();
       onScreenChange(ScreenEnum.SEARCH);
     }

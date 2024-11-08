@@ -58,6 +58,7 @@ namespace SeriesModule {
     limit: number;
     observations: IObservation[];
     chartSettings?: IChartSettings;
+    id?: string;
   }
 
   export interface IObservationPayload {
