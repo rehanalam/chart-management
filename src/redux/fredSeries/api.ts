@@ -7,16 +7,23 @@ export const fredSeriesApi = createApi({
   reducerPath: 'fredSeriesApi',
   baseQuery: AxiosModule.Utils.AxiosBaseQuery({ contextUrl: 'series' }),
   endpoints: (builder) => ({
-    getFredSeries: builder.mutation<SeriesModule.IFredSeriesResponse, string>({
+    getFredSeries: builder.query<SeriesModule.IFredSeriesResponse, string>({
+      query: (seriesId) => ({
+        method: 'GET',
+        url: `/?series_id=${seriesId}`,
+      }),
+    }),
+
+    searchFredSeries: builder.query<SeriesModule.IFredSeriesResponse, string>({
       query: (searchText) => ({
         method: 'GET',
-        url: `/?search_text=${searchText}`,
+        url: `/search/?search_text=${searchText}`,
       }),
     }),
 
     getFredObservationsById: builder.mutation<
-      SeriesModule.IFredSeriesResponse,
-      IObservationsSettingsFormValues
+      SeriesModule.IObservationResponse,
+      SeriesModule.IObservationPayload
     >({
       query: (body) => ({
         method: 'POST',
@@ -27,7 +34,10 @@ export const fredSeriesApi = createApi({
   }),
 });
 
-export const { useGetFredSeriesMutation, useGetFredObservationsByIdMutation } =
-  fredSeriesApi;
+export const {
+  useGetFredSeriesQuery,
+  useLazySearchFredSeriesQuery,
+  useGetFredObservationsByIdMutation,
+} = fredSeriesApi;
 
 export default fredSeriesApi;

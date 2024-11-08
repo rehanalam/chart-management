@@ -2,7 +2,7 @@ import { Form, FormInstance, Select, Typography } from 'antd';
 import { ISeriesSearchFormValues, ScreenEnum } from '.';
 import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
-import { useGetFredSeriesMutation } from '../../redux/rootApis';
+import { useLazySearchFredSeriesQuery } from '../../redux/rootApis';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -31,7 +31,7 @@ const computeSelectOption = (result: SeriesModule.IFredSeriesResponse) => {
 const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
   const [options, setOptions] = useState<ISelectOptions[]>([]);
 
-  const [getFredSeries] = useGetFredSeriesMutation();
+  const [getFredSeries] = useLazySearchFredSeriesQuery();
 
   const onFinish = (values: any) => {
     console.log('Form values:', values);
@@ -61,8 +61,8 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
     <Form
       form={form}
       layout="vertical"
-      initialValues={{}}
       className="py-6"
+      initialValues={{ seriesId: 'GNPCA' }}
       onFinish={onFinish}
       name="series-search-form"
     >

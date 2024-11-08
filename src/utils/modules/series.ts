@@ -28,4 +28,36 @@ namespace SeriesModule {
     limit: number;
     seriess: ISeries[];
   }
+
+  export interface IObservation {
+    realtime_start: string;
+    realtime_end: string;
+    date: string;
+    value: string;
+  }
+
+  export interface IObservationResponse {
+    realtime_start: string;
+    realtime_end: string;
+    observation_start: string;
+    observation_end: string;
+    units: string;
+    output_type: number;
+    file_type: string;
+    order_by: string;
+    sort_order: string;
+    count: number;
+    offset: number;
+    limit: number;
+    observations: IObservation[];
+  }
+
+  export interface IObservationPayload {
+    seriesId: string;
+    frequency: string;
+    units: string;
+    limit: string;
+    observationStart: string;
+    observationEnd: string;
+  }
 }

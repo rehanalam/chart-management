@@ -2,15 +2,20 @@ import {
   DatePicker,
   Form,
   FormInstance,
+  Input,
   InputNumber,
   message,
   Select,
 } from 'antd';
-import { useGetFredObservationsByIdMutation } from '../../redux/rootApis';
+import {
+  useGetFredObservationsByIdMutation,
+  useGetFredSeriesQuery,
+} from '../../redux/rootApis';
 import { IObservationsSettingsFormValues, ScreenEnum } from '.';
 import { useEffect } from 'react';
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';
+import ChartPreview from './ChartPreview';
 
 const { RangePicker } = DatePicker;
 
@@ -49,8 +54,8 @@ enum FrequencyEnum {
 }
 
 // Default values for observation_start and observation_end
-const DEFAULT_OBSERVATION_START = '1776-07-04';
-const DEFAULT_OBSERVATION_END = '2024-12-31';
+export const DEFAULT_OBSERVATION_START = '2015-07-04';
+export const DEFAULT_OBSERVATION_END = '2024-12-31';
 
 const unitOptions = Object.keys(UnitsEnum).map((key) => ({
   label: UnitsEnum[key as keyof typeof UnitsEnum],
@@ -73,101 +78,84 @@ const ObservationSettingsForm = ({
   seriesId,
   onScreenChange,
 }: IObservationSettingsFormProps) => {
-  const [getObservationsById, { data: observationResp }] =
-    useGetFredObservationsByIdMutation();
-
-  const getObservations = async (body: IObservationsSettingsFormValues) => {
-    if (seriesId) {
-      try {
-        await getObservationsById(body).unwrap();
-      } catch {
-        message.success('Error on getting observation data');
-      }
-    }
-  };
+  const { data: seriesInfo } = useGetFredSeriesQuery(seriesId || '', {
+    skip: !seriesId,
+    refetchOnMountOrArgChange: true,
+  });
 
   const onFinish = ({ observation_period, ...otherValues }: any) => {
-    // Extract start and end dates from the form
-    const observationStart = observation_period
-      ? observation_period[0].format('YYYY-MM-DD')
-      : DEFAULT_OBSERVATION_START;
-    const observationEnd = observation_period
-      ? observation_period[1].format('YYYY-MM-DD')
-      : DEFAULT_OBSERVATION_END;
-
-    getObservations({
-      ...otherValues,
-      observationStart,
-      observationEnd,
-      seriesId,
-    });
+    onScreenChange(ScreenEnum.CHART_PREVIEW);
   };
 
+  useEffect(() => {
+    if (seriesInfo) {
+      form.setFieldValue('graphTitle', seriesInfo.seriess[0].title);
+    }
+  }, [seriesInfo]);
+
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      initialValues={{}}
-      className="py-6"
-      onFinish={onFinish}
-      name="series-search-form"
-    >
-      {JSON.stringify(unitOptions)}
-      <FormItem name="units" label="Units">
-        <Select
-          showSearch
-          placeholder="Select Units"
-          className="w-full"
-          options={unitOptions}
-        ></Select>
-      </FormItem>
-      <FormItem name="frequency" label="Frequency">
-        <Select
-          showSearch
-          placeholder="Select Frequency"
-          className="w-full"
-          options={frequencyOptions}
-        ></Select>
-      </FormItem>
-      <Form.Item
-        name="observation_period"
-        label="Observation Period"
-        rules={[{ required: true, message: 'Please select a date range' }]}
+    <>
+      <Form
+        form={form}
+        layout="vertical"
+        className="py-6"
+        onFinish={onFinish}
+        name="observation-setting-form"
       >
-        <RangePicker
-          format="YYYY-MM-DD"
-          allowClear={false}
-          className="w-full"
-          defaultPickerValue={[
-            dayjs(DEFAULT_OBSERVATION_START),
-            dayjs(DEFAULT_OBSERVATION_END),
+        <FormItem name="graphTitle" label="Graph Title">
+          <Input />
+        </FormItem>
+        <FormItem name="units" label="Units">
+          <Select
+            showSearch
+            placeholder="Select Units"
+            className="w-full"
+            options={unitOptions}
+          ></Select>
+        </FormItem>
+        <FormItem name="frequency" label="Frequency">
+          <Select
+            showSearch
+            placeholder="Select Frequency"
+            className="w-full"
+            options={frequencyOptions}
+          ></Select>
+        </FormItem>
+        <Form.Item
+          name="observation_period"
+          label="Observation Period"
+          rules={[{ required: true, message: 'Please select a date range' }]}
+        >
+          <RangePicker
+            format="YYYY-MM-DD"
+            allowClear={false}
+            className="w-full"
+            defaultPickerValue={[
+              dayjs(DEFAULT_OBSERVATION_START),
+              dayjs(DEFAULT_OBSERVATION_END),
+            ]}
+          />
+        </Form.Item>
+        <Form.Item
+          label="Results Limit"
+          name="limit"
+          rules={[
+            {
+              required: true,
+              message: 'Please enter a limit value',
+            },
+            {
+              type: 'number',
+              min: 1,
+              max: 9999,
+              message: 'Limit must be between 1 and 100000',
+            },
           ]}
-        />
-      </Form.Item>
-      <Form.Item
-        label="Results Limit"
-        name="limit"
-        rules={[
-          {
-            required: true,
-            message: 'Please enter a limit value',
-          },
-          {
-            type: 'number',
-            min: 1,
-            max: 9999,
-            message: 'Limit must be between 1 and 100000',
-          },
-        ]}
-      >
-        <InputNumber
-          min={1}
-          max={9999}
-          defaultValue={100000}
-          style={{ width: '100%' }}
-        />
-      </Form.Item>
-    </Form>
+        >
+          <InputNumber min={1} max={9999} style={{ width: '100%' }} />
+        </Form.Item>
+      </Form>
+    </>
   );
 };
 
