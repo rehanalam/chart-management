@@ -1,4 +1,11 @@
 namespace SeriesModule {
+  export interface IChartSettings {
+    title: string;
+    yAxisLabel: string;
+    lineColor: string;
+    lineStyle: string;
+    chartType: string;
+  }
   export interface ISeries {
     id: string;
     realtime_start: string;
@@ -50,6 +57,7 @@ namespace SeriesModule {
     offset: number;
     limit: number;
     observations: IObservation[];
+    chartSettings?: IChartSettings;
   }
 
   export interface IObservationPayload {

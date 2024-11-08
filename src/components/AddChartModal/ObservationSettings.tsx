@@ -6,11 +6,9 @@ import {
   InputNumber,
   message,
   Select,
+  Typography,
 } from 'antd';
-import {
-  useGetFredObservationsByIdMutation,
-  useGetFredSeriesQuery,
-} from '../../redux/rootApis';
+import { useGetFredSeriesQuery } from '../../redux/rootApis';
 import { IObservationsSettingsFormValues, ScreenEnum } from '.';
 import { useEffect } from 'react';
 import FormItem from 'antd/es/form/FormItem';
@@ -70,31 +68,30 @@ const frequencyOptions = Object.keys(FrequencyEnum).map((key) => ({
 interface IObservationSettingsFormProps {
   form: FormInstance<IObservationsSettingsFormValues>;
   seriesId: string | null;
+  seriesData?: SeriesModule.IFredSeriesResponse;
   onScreenChange: (screen: ScreenEnum) => void;
 }
 
 const ObservationSettingsForm = ({
   form,
-  seriesId,
+  seriesData,
   onScreenChange,
 }: IObservationSettingsFormProps) => {
-  const { data: seriesInfo } = useGetFredSeriesQuery(seriesId || '', {
-    skip: !seriesId,
-    refetchOnMountOrArgChange: true,
-  });
-
   const onFinish = ({ observation_period, ...otherValues }: any) => {
     onScreenChange(ScreenEnum.CHART_PREVIEW);
   };
 
-  useEffect(() => {
-    if (seriesInfo) {
-      form.setFieldValue('graphTitle', seriesInfo.seriess[0].title);
-    }
-  }, [seriesInfo]);
-
   return (
     <>
+      <Typography.Title level={4}>Observation Settings</Typography.Title>
+      <div className="bg-gray-50 p-4 rounded-md ">
+        <Typography.Title level={5}>
+          {seriesData?.seriess[0].title}
+        </Typography.Title>
+        <Typography.Paragraph className="!m-0">
+          {seriesData?.seriess[0].notes}
+        </Typography.Paragraph>
+      </div>
       <Form
         form={form}
         layout="vertical"
@@ -102,9 +99,6 @@ const ObservationSettingsForm = ({
         onFinish={onFinish}
         name="observation-setting-form"
       >
-        <FormItem name="graphTitle" label="Graph Title">
-          <Input />
-        </FormItem>
         <FormItem name="units" label="Units">
           <Select
             showSearch

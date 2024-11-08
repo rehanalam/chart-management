@@ -43,4 +43,11 @@ export const observationMockData = {
       value: '.',
     },
   ],
+  chartSettings: {
+    title: 'Real Gross National Product',
+    yAxisLabel: 'Percent Change from Year Ago',
+    lineColor: '#4bc0c0',
+    lineStyle: 'solid',
+    chartType: 'line',
+  },
 };

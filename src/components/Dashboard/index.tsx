@@ -8,6 +8,7 @@ import AddChartModal from '../AddChartModal';
 import ReduxModule from '../../utils/modules/redux';
 import LinearChart from '../Charts/LinearChart';
 import ChartDropdown from '../ChartDropdown';
+import ChartComponent from '../Charts';
 
 const Dashboard = () => {
   const chartsData = ReduxModule.useAppSelector(
@@ -45,7 +46,12 @@ const Dashboard = () => {
               <div className="flex justify-between">
                 <ChartDropdown />
               </div>
-              <LinearChart observationData={data} />
+              {data?.chartSettings && (
+                <ChartComponent
+                  observationData={data}
+                  settings={data.chartSettings}
+                />
+              )}
               {/* <div className="pt-4">
                 <AddChartModal btnText="Edit Chart" />
               </div> */}

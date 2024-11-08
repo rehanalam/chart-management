@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Chart as ChartJS,
@@ -10,13 +10,14 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { useGetFredObservationsByIdMutation } from '../../redux/rootApis';
+import { useLazyGetFredObservationsByIdQuery } from '../../redux/rootApis';
 import { IObservationsSettingsFormValues, ScreenEnum } from '.';
-import { Button, message, Spin } from 'antd';
+import { Button, message, Spin, Typography } from 'antd';
 import dayjs from 'dayjs';
 import {
   DEFAULT_OBSERVATION_END,
   DEFAULT_OBSERVATION_START,
+  UnitsEnum,
 } from './ObservationSettings';
 import { LoadingOutlined } from '@ant-design/icons';
 import LineChartAntd from '../Charts/LineChartAntd';
@@ -24,6 +25,8 @@ import LinearChartNivo from '../Charts/LinearChartNivo';
 import ReduxModule from '../../utils/modules/redux';
 import { updateObservations } from '../../redux/rootSlices';
 import LinearChart from '../Charts/LinearChart';
+import ChartSettingsForm from './ChartSettingsForm';
+import ChartComponent from '../Charts';
 
 // Register the necessary components
 ChartJS.register(
@@ -39,6 +42,7 @@ ChartJS.register(
 interface IChartPreviewProps {
   seriesId: string;
   formData: IObservationsSettingsFormValues | null;
+  seriesData?: SeriesModule.IFredSeriesResponse;
   onScreenChange: (screen: ScreenEnum) => void;
   onCloseModal?: () => void;
 }
@@ -46,17 +50,31 @@ interface IChartPreviewProps {
 const ChartPreview = ({
   formData,
   seriesId,
+  seriesData,
   onScreenChange,
   onCloseModal,
 }: IChartPreviewProps) => {
+  const [chartSettings, setChartSettings] = useState({
+    title: seriesData?.seriess?.[0]?.title || 'Value Over Time',
+    yAxisLabel: seriesData?.seriess?.[0]?.units || 'Y axis',
+    lineColor: '#4bc0c0',
+    lineStyle: 'solid',
+    chartType: 'line',
+  });
+
   const dispatch = ReduxModule.useAppDispatch();
 
   const [getObservationsById, { data: observationResp, isLoading }] =
-    useGetFredObservationsByIdMutation();
+    useLazyGetFredObservationsByIdQuery();
 
   const getObservations = async (body: SeriesModule.IObservationPayload) => {
     try {
-      await getObservationsById(body).unwrap();
+      const resp = await getObservationsById(body).unwrap();
+      setChartSettings({
+        ...chartSettings,
+        yAxisLabel:
+          UnitsEnum[resp.units.toUpperCase() as keyof typeof UnitsEnum],
+      });
     } catch {
       message.success('Error on getting observation data');
     }
@@ -64,7 +82,7 @@ const ChartPreview = ({
 
   const onAddChartClick = async () => {
     if (observationResp) {
-      await dispatch(updateObservations(observationResp));
+      await dispatch(updateObservations({ ...observationResp, chartSettings }));
       onCloseModal?.();
       onScreenChange(ScreenEnum.SEARCH);
     }
@@ -92,12 +110,30 @@ const ChartPreview = ({
     }
   }, [formData]);
 
+  const handleSettingsChange = (newSettings: SeriesModule.IChartSettings) => {
+    setChartSettings(newSettings);
+  };
+
   return (
     <div className="flex flex-col">
-      {isLoading && <Spin indicator={<LoadingOutlined spin />} size="large" />}
-      {observationResp && <LinearChart observationData={observationResp} />}
+      <Typography.Title level={5}>Chart Settings</Typography.Title>
+      <ChartSettingsForm
+        settings={chartSettings}
+        onSettingsChange={handleSettingsChange}
+      />
 
-      <div className="flex justify-end pt-4 gap-2 ">
+      <Typography.Title level={5}>Chart Preview</Typography.Title>
+      {isLoading && <Spin indicator={<LoadingOutlined spin />} size="large" />}
+      {observationResp && (
+        <div className="py-6">
+          <ChartComponent
+            observationData={observationResp}
+            settings={chartSettings}
+          />
+        </div>
+      )}
+
+      <div className="flex justify-end pt-6 gap-2 ">
         <Button
           type="default"
           onClick={() => onScreenChange(ScreenEnum.SETTINGS)}

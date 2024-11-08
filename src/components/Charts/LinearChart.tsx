@@ -24,9 +24,10 @@ ChartJS.register(
 
 interface ILinearChartProps {
   observationData: SeriesModule.IObservationResponse;
+  settings: SeriesModule.IChartSettings;
 }
 
-const LinearChart = ({ observationData }: ILinearChartProps) => {
+const LinearChart = ({ observationData, settings }: ILinearChartProps) => {
   const dataFromAPI = useMemo(
     () =>
       observationData.observations.map(({ date, value }) => ({
@@ -36,24 +37,47 @@ const LinearChart = ({ observationData }: ILinearChartProps) => {
     [observationData.observations]
   );
 
+  const values = useMemo(
+    () =>
+      dataFromAPI.map((item) =>
+        item.value === '.' ? 0 : parseFloat(item.value)
+      ),
+    [dataFromAPI]
+  );
+
   const chartData = {
-    labels: dataFromAPI.map((item) => item.date), // x-axis labels (dates)
+    labels: dataFromAPI.map((item) => item.date),
     datasets: [
       {
-        label: 'Value Over Time',
-        data: dataFromAPI.map((item) =>
-          item.value === '.' ? 0 : parseFloat(item.value)
-        ), // y-axis data (values)
-        fill: false, // No area under the curve
-        borderColor: 'rgba(75, 192, 192, 1)', // Line color
-        tension: 0.1, // Line curve tension
+        label: settings.title,
+        data: values,
+        fill: false,
+        borderColor: settings.lineColor,
+        borderDash:
+          settings.lineStyle === 'dotted'
+            ? [5, 5]
+            : settings.lineStyle === 'dashed'
+              ? [10, 10]
+              : [],
+        tension: 0.1,
       },
     ],
   };
 
+  const chartOptions = {
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: settings.yAxisLabel,
+        },
+      },
+    },
+  };
+
   return (
     <div className="w-full">
-      <Line data={chartData} />
+      <Line data={chartData} options={chartOptions} />
     </div>
   );
 };

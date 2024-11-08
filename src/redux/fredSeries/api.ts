@@ -21,7 +21,7 @@ export const fredSeriesApi = createApi({
       }),
     }),
 
-    getFredObservationsById: builder.mutation<
+    getFredObservationsById: builder.query<
       SeriesModule.IObservationResponse,
       SeriesModule.IObservationPayload
     >({
@@ -37,7 +37,7 @@ export const fredSeriesApi = createApi({
 export const {
   useGetFredSeriesQuery,
   useLazySearchFredSeriesQuery,
-  useGetFredObservationsByIdMutation,
+  useLazyGetFredObservationsByIdQuery,
 } = fredSeriesApi;
 
 export default fredSeriesApi;

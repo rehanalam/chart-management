@@ -3,6 +3,7 @@ import { Button, Form, message, Modal, Select } from 'antd';
 import SeriesSearchForm from './SeriesSearchForm';
 import ObservationSettingsForm from './ObservationSettings';
 import ChartPreview from './ChartPreview';
+import { useGetFredSeriesQuery } from '../../redux/fredSeries/api';
 
 export enum ScreenEnum {
   SEARCH = 'search',
@@ -35,12 +36,22 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
   const [observationsSettingsForm] =
     Form.useForm<IObservationsSettingsFormValues>();
 
+  const seriesId = seriesSearchForm.getFieldValue('seriesId');
+
+  const { data: seriesData } = useGetFredSeriesQuery(seriesId || '', {
+    skip: !seriesId,
+    refetchOnMountOrArgChange: true,
+  });
+
   const showModal = () => {
     setIsModalOpen(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setScreen(ScreenEnum.SEARCH);
+    observationsSettingsForm.resetFields();
+    seriesSearchForm.resetFields();
   };
 
   const onScreenChange = (screen: ScreenEnum) => {
@@ -53,17 +64,19 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
         return (
           <ObservationSettingsForm
             form={observationsSettingsForm}
-            seriesId={seriesSearchForm.getFieldValue('seriesId') || null}
+            seriesId={seriesId || null}
             onScreenChange={onScreenChange}
+            seriesData={seriesData}
           />
         );
       case ScreenEnum.CHART_PREVIEW:
         return (
           <ChartPreview
             formData={observationsSettingsForm.getFieldsValue() || null}
-            seriesId={seriesSearchForm.getFieldValue('seriesId') || null}
+            seriesId={seriesId || null}
             onScreenChange={onScreenChange}
             onCloseModal={handleCancel}
+            seriesData={seriesData}
           />
         );
       default:
@@ -116,7 +129,6 @@ const AddChartModal = ({ btnText }: IAddChartModalProp) => {
         {btnText ? btnText : 'Create Chart'}
       </Button>
       <Modal
-        title="Search series"
         open={isModalOpen}
         onCancel={handleCancel}
         footer={renderFooter()}

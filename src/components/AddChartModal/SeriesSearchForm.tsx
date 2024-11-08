@@ -1,4 +1,4 @@
-import { Form, FormInstance, Select, Typography } from 'antd';
+import { Form, FormInstance, Select, Spin, Tag, Typography } from 'antd';
 import { ISeriesSearchFormValues, ScreenEnum } from '.';
 import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
@@ -17,19 +17,46 @@ interface ISelectOptions {
   value: string | number;
   description: string;
 }
+const predefinedFilters = [
+  'CPI',
+  'GDP',
+  'Inflation',
+  'Unemployment',
+  'M2',
+  'Real GDP',
+  'Unemployment Rate',
+  '30 Year Mortgage Interest Rate',
+  'M1',
+];
 
-const computeSelectOption = (result: SeriesModule.IFredSeriesResponse) => {
-  return result.seriess.map((series, index) => {
-    return {
-      label: series.title,
-      value: series.id,
-      description: series.notes,
-    };
-  });
+const computeSelectOption = async (
+  result: SeriesModule.IFredSeriesResponse
+) => {
+  // Example of an async operation for each series (e.g., fetch additional data)
+  const options = await Promise.all(
+    result.seriess.map(async (series) => {
+      // Simulate fetching additional information per series
+      const additionalData = await fetchAdditionalData(series.id);
+      return {
+        label: series.title,
+        value: series.id,
+        description: series.notes + ' ' + additionalData,
+      };
+    })
+  );
+  return options;
+};
+
+const fetchAdditionalData = async (seriesId: string) => {
+  // Simulate an async call to fetch additional data for each series
+  return new Promise<string>((resolve) =>
+    setTimeout(() => resolve(`Additional data for ${seriesId}`), 1000)
+  );
 };
 
 const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
   const [options, setOptions] = useState<ISelectOptions[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [getFredSeries] = useLazySearchFredSeriesQuery();
 
@@ -42,11 +69,14 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
       if (value) {
+        setLoading(true);
         const result = await getFredSeries(value).unwrap();
-        console.log(computeSelectOption(result));
-        setOptions(computeSelectOption(result));
+        const options = await computeSelectOption(result);
+        setOptions(options);
+        setLoading(false);
       } else {
         setOptions([]);
+        setLoading(false);
       }
     }, 500),
     [getFredSeries]
@@ -58,36 +88,43 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
   };
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      className="py-6"
-      initialValues={{ seriesId: 'GNPCA' }}
-      onFinish={onFinish}
-      name="series-search-form"
-    >
-      <Form.Item
-        name="seriesId"
-        label="Search Series"
-        rules={[{ required: true, message: 'Please select a series' }]}
-        tooltip="This is a required field"
+    <>
+      <Typography.Title level={4}>Chart Preview</Typography.Title>
+
+      <Form
+        form={form}
+        layout="vertical"
+        className="py-6"
+        // initialValues={{ seriesId: 'GNPCA' }}
+        onFinish={onFinish}
+        name="series-search-form"
       >
-        <Select
-          showSearch
-          placeholder="Search for series"
-          onSearch={handleSearch}
-          className="w-full"
-          options={options}
+        <Form.Item
+          name="seriesId"
+          label="Search Series"
+          rules={[{ required: true, message: 'Please select a series' }]}
+          tooltip="This is a required field"
         >
-          {/* {options.map((option: ISelectOptions) => (
-            <Option key={`${option.value}`} value={option.value}>
-              <Title level={5}>{option.label}</Title>
-              <Paragraph>{option.description}</Paragraph>
-            </Option>
-          ))} */}
-        </Select>
-      </Form.Item>
-    </Form>
+          <Select
+            loading={loading}
+            showSearch
+            placeholder="Search for series"
+            onSearch={handleSearch}
+            className="w-full h-10"
+            options={options.map((option) => ({
+              label: (
+                <>
+                  <Title level={5}>{option.label}</Title>
+                  <Paragraph>{option.description}</Paragraph>
+                </>
+              ),
+              value: option.value,
+            }))}
+            notFoundContent={loading ? <Spin className="p-4 mx-auto" /> : null}
+          />
+        </Form.Item>
+      </Form>
+    </>
   );
 };
 
