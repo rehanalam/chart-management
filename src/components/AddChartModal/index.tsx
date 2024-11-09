@@ -65,7 +65,8 @@ const AddChartModal = ({
 
   useEffect(() => {
     if (defaultChartData) {
-      seriesSearchForm.setFieldValue(seriesId, defaultChartData.seriesId);
+      seriesSearchForm.setFieldValue('seriesId', defaultChartData.seriesId);
+
       observationsSettingsForm.setFieldsValue({
         ...defaultChartData.observationSettings,
         observationPeriod: [
@@ -104,15 +105,17 @@ const AddChartModal = ({
         );
       case ScreenEnum.CHART_PREVIEW:
         return (
-          <ChartPreview
-            isEdit={isEdit}
-            formData={observationsSettingsForm.getFieldsValue() || null}
-            seriesId={seriesId || null}
-            seriesData={seriesData}
-            defaultChartData={defaultChartData}
-            onScreenChange={onScreenChange}
-            onCloseModal={handleCancel}
-          />
+          seriesId && (
+            <ChartPreview
+              isEdit={isEdit}
+              formData={observationsSettingsForm.getFieldsValue() || null}
+              seriesId={seriesId}
+              seriesData={seriesData}
+              defaultChartData={defaultChartData}
+              onScreenChange={onScreenChange}
+              onCloseModal={handleCancel}
+            />
+          )
         );
       default:
       case ScreenEnum.SEARCH:
