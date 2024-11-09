@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { ResponsiveLine } from '@nivo/line';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
 
 interface ILinearChartNivoProps {
   observationData: SeriesModule.IObservationResponse;

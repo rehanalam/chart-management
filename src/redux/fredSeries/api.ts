@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import AxiosModule from '../../utils/modules/api';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
 
 export const fredSeriesApi = createApi({
   reducerPath: 'fredSeriesApi',

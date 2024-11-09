@@ -17,7 +17,6 @@ import dayjs from 'dayjs';
 import {
   DEFAULT_OBSERVATION_END,
   DEFAULT_OBSERVATION_START,
-  UnitsEnum,
 } from './ObservationSettings';
 import { LoadingOutlined } from '@ant-design/icons';
 import ReduxModule from '../../utils/modules/redux';
@@ -25,7 +24,7 @@ import { addObservations, updateObservations } from '../../redux/rootSlices';
 import ChartSettingsForm from './ChartSettingsForm';
 import ChartComponent from '../Charts';
 import { generateRandomId } from '../../utils/common';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
 
 ChartJS.register(
   CategoryScale,
@@ -80,7 +79,9 @@ const ChartPreview = ({
       setChartSettings({
         ...chartSettings,
         yAxisLabel:
-          UnitsEnum[resp.units.toUpperCase() as keyof typeof UnitsEnum],
+          SeriesModule.UnitsEnum[
+            resp.units.toUpperCase() as keyof typeof SeriesModule.UnitsEnum
+          ],
       });
     } catch {
       message.success('Error on getting observation data');
@@ -179,7 +180,7 @@ const ChartPreview = ({
         </Button>
         {isEdit ? (
           <Button type="primary" onClick={onEditChartClick}>
-            Edit Chart
+            Save Chart
           </Button>
         ) : (
           <Button type="primary" onClick={onAddChartClick}>

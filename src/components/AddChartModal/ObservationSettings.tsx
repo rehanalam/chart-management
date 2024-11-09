@@ -9,56 +9,18 @@ import {
 import { IObservationsSettingsFormValues, ScreenEnum } from '.';
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
+import { generateRandomId } from '../../utils/common';
 
 const { RangePicker } = DatePicker;
-
-export enum UnitsEnum {
-  LIN = 'Levels (No transformation)',
-  CHG = 'Change',
-  CH1 = 'Change from Year Ago',
-  PCH = 'Percent Change',
-  PC1 = 'Percent Change from Year Ago',
-  PCA = 'Compounded Annual Rate of Change',
-  CCH = 'Continuously Compounded Rate of Change',
-  CCA = 'Continuously Compounded Annual Rate of Change',
-  LOG = 'Natural Log',
-}
-
-enum FrequencyEnum {
-  q = 'Quarterly',
-  sa = 'Semiannual',
-  a = 'Annual',
-
-  //   TODO: API not accepting these values
-  // Frequencies without period descriptions
-  //   d = 'Daily',
-  //   w = 'Weekly',
-  //   bw = 'Biweekly',
-  //   m = 'Monthly',  //   // Frequencies with period descriptions
-  //   wef = 'Weekly, Ending Friday',
-  //   weth = 'Weekly, Ending Thursday',
-  //   wew = 'Weekly, Ending Wednesday',
-  //   wetu = 'Weekly, Ending Tuesday',
-  //   wem = 'Weekly, Ending Monday',
-  //   wesu = 'Weekly, Ending Sunday',
-  //   wesa = 'Weekly, Ending Saturday',
-  //   bwew = 'Biweekly, Ending Wednesday',
-  //   bwem = 'Biweekly, Ending Monday',
-}
 
 // Default values for observation_start and observation_end
 export const DEFAULT_OBSERVATION_START = '2015-07-04';
 export const DEFAULT_OBSERVATION_END = '2024-12-31';
 
-const unitOptions = Object.keys(UnitsEnum).map((key) => ({
-  label: UnitsEnum[key as keyof typeof UnitsEnum],
+const unitOptions = Object.keys(SeriesModule.UnitsEnum).map((key) => ({
+  label: SeriesModule.UnitsEnum[key as keyof typeof SeriesModule.UnitsEnum],
   value: key.toLowerCase(),
-}));
-
-const frequencyOptions = Object.keys(FrequencyEnum).map((key) => ({
-  label: FrequencyEnum[key as keyof typeof FrequencyEnum],
-  value: key,
 }));
 
 interface IObservationSettingsFormProps {
@@ -67,6 +29,8 @@ interface IObservationSettingsFormProps {
   seriesData?: SeriesModule.IFredSeriesResponse;
   onScreenChange: (screen: ScreenEnum) => void;
 }
+
+const formId = generateRandomId();
 
 const ObservationSettingsForm = ({
   form,
@@ -104,12 +68,17 @@ const ObservationSettingsForm = ({
           ></Select>
         </FormItem>
         <FormItem name="frequency" label="Frequency">
-          <Select
-            showSearch
-            placeholder="Select Frequency"
-            className="w-full"
-            options={frequencyOptions}
-          ></Select>
+          {seriesData?.seriess && (
+            <Select
+              showSearch
+              placeholder="Select Frequency"
+              className="w-full"
+              options={SeriesModule.getFilteredFrequencyOptions(
+                seriesData?.seriess?.[0]?.frequency,
+                seriesData?.seriess?.[0]?.frequency_short
+              )}
+            ></Select>
+          )}
         </FormItem>
         <Form.Item
           name="observationPeriod"

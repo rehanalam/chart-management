@@ -1,12 +1,9 @@
-import { Form, FormInstance, Select, Spin, Tag, Typography } from 'antd';
+import { Form, FormInstance, message, Select, Spin, Typography } from 'antd';
 import { ISeriesSearchFormValues, ScreenEnum } from '.';
 import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
 import { useLazySearchFredSeriesQuery } from '../../redux/rootApis';
-import SeriesModule from 'src/utils/modules/series';
-
-const { Title, Paragraph } = Typography;
-const { Option } = Select;
+import SeriesModule from '../../utils/modules/series';
 
 interface ISeriesSearchFormProps {
   form: FormInstance<ISeriesSearchFormValues>;
@@ -16,70 +13,50 @@ interface ISeriesSearchFormProps {
 interface ISelectOptions {
   label: string;
   value: string | number;
-  description: string;
 }
-
-const computeSelectOption = async (
-  result: SeriesModule.IFredSeriesResponse
-) => {
-  // Example of an async operation for each series (e.g., fetch additional data)
-  const options = await Promise.all(
-    result.seriess.map(async (series) => {
-      // Simulate fetching additional information per series
-      const additionalData = await fetchAdditionalData(series.id);
-      return {
-        label: series.title,
-        value: series.id,
-        description: series.notes + ' ' + additionalData,
-      };
-    })
-  );
-  return options;
-};
-
-const fetchAdditionalData = async (seriesId: string) => {
-  // Simulate an async call to fetch additional data for each series
-  return new Promise<string>((resolve) =>
-    setTimeout(() => resolve(`Additional data for ${seriesId}`), 1000)
-  );
-};
 
 const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
   const [options, setOptions] = useState<ISelectOptions[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false); // State to manage error display
 
   const [getFredSeries] = useLazySearchFredSeriesQuery();
 
   const onFinish = (values: any) => {
-    console.log('Form values:', values);
     onScreenChange(ScreenEnum.SETTINGS);
   };
 
   // Debounced function to fetch data based on search input
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
-      if (value) {
-        setLoading(true);
-        const result = await getFredSeries(value).unwrap();
-        const options = await computeSelectOption(result);
-        setOptions(options);
-        setLoading(false);
-      } else {
-        setOptions([]);
+      try {
+        if (value) {
+          setShowError(false);
+          setLoading(true);
+          const result = await getFredSeries(value).unwrap();
+          const options = await SeriesModule.computeSelectOption(result);
+          setOptions(options);
+          setShowError(!!(options.length === 0));
+        } else {
+          setOptions([]);
+        }
+      } catch (error: any) {
+        message.error('Error on series search');
+      } finally {
         setLoading(false);
       }
     }, 500),
+
     [getFredSeries]
   );
 
-  // Handle search input change
   const handleSearch = (value: string) => {
     debouncedSearch(value);
   };
 
   return (
     <>
-      <Typography.Title level={4}>Chart Preview</Typography.Title>
+      <Typography.Title level={4}>FRED Series</Typography.Title>
 
       <Form
         form={form}
@@ -93,21 +70,26 @@ const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
         <Form.Item
           name="seriesId"
           label="Search Series"
+          validateStatus={showError ? 'error' : undefined} // Error status when no results
+          help={
+            showError
+              ? 'No series found. Please try a different search term.'
+              : undefined
+          }
           rules={[{ required: true, message: 'Please select a series' }]}
-          tooltip="This is a required field"
         >
           <Select
-            loading={loading}
-            showSearch
+            className="w-full h-10"
             placeholder="Search for series"
             onSearch={handleSearch}
-            className="w-full h-10"
+            loading={loading}
+            showSearch
+            allowClear={true}
             options={options.map((option) => ({
               label: option.label,
               value: option.value,
             }))}
             notFoundContent={loading ? <Spin className="p-4 mx-auto" /> : null}
-            allowClear={true}
           />
         </Form.Item>
       </Form>

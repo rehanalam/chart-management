@@ -4,7 +4,7 @@ import { removeObservations, addObservations } from '../../redux/rootSlices';
 import ReduxModule from '../../utils/modules/redux';
 import { generateRandomId } from '../../utils/common';
 import AddChartModal from '../AddChartModal';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
 
 interface IChartDropdownProps {
   chartData: SeriesModule.IObservationState;

@@ -1,7 +1,8 @@
 import { Form, Input, Select } from 'antd';
 import { debounce } from 'lodash';
 import { useCallback, useEffect } from 'react';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
+import { generateRandomId } from '../../utils/common';
 
 interface IChartSettingsFormProps {
   settings: SeriesModule.IChartSettings;
@@ -63,6 +64,7 @@ const ChartSettingsForm = ({
       initialValues={settings}
       onValuesChange={handleFormChange}
       className="mb-4 border-b py-6"
+      name={`chart-settings-form-${generateRandomId()}`}
     >
       <div className="grid grid-cols-2 gap-4">
         <Form.Item label="Chart Title" name="title">

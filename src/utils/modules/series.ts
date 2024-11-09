@@ -76,6 +76,117 @@ namespace SeriesModule {
     observationStart: string;
     observationEnd: string;
   }
+
+  export enum UnitsEnum {
+    LIN = 'Levels (No transformation)',
+    CHG = 'Change',
+    CH1 = 'Change from Year Ago',
+    PCH = 'Percent Change',
+    PC1 = 'Percent Change from Year Ago',
+    PCA = 'Compounded Annual Rate of Change',
+    CCH = 'Continuously Compounded Rate of Change',
+    CCA = 'Continuously Compounded Annual Rate of Change',
+    LOG = 'Natural Log',
+  }
+
+  export enum FrequencyEnum {
+    q = 'Quarterly',
+    sa = 'Semiannual',
+    a = 'Annual',
+    d = 'Daily',
+    w = 'Weekly',
+    bw = 'Biweekly',
+    m = 'Monthly',
+    wef = 'Weekly, Ending Friday',
+    weth = 'Weekly, Ending Thursday',
+    wew = 'Weekly, Ending Wednesday',
+    wetu = 'Weekly, Ending Tuesday',
+    wem = 'Weekly, Ending Monday',
+    wesu = 'Weekly, Ending Sunday',
+    wesa = 'Weekly, Ending Saturday',
+    bwew = 'Biweekly, Ending Wednesday',
+    bwem = 'Biweekly, Ending Monday',
+  }
+
+  export const frequencyMapping: Record<string, FrequencyEnum[]> = {
+    Annual: [FrequencyEnum.a],
+    Semiannual: [FrequencyEnum.a, FrequencyEnum.sa],
+    Quarterly: [FrequencyEnum.a, FrequencyEnum.sa, FrequencyEnum.q],
+    Monthly: [
+      FrequencyEnum.a,
+      FrequencyEnum.sa,
+      FrequencyEnum.q,
+      FrequencyEnum.m,
+    ],
+    Weekly: [
+      FrequencyEnum.a,
+      FrequencyEnum.sa,
+      FrequencyEnum.q,
+      FrequencyEnum.m,
+      FrequencyEnum.w,
+      FrequencyEnum.wef,
+      FrequencyEnum.weth,
+      FrequencyEnum.wew,
+      FrequencyEnum.wetu,
+      FrequencyEnum.wem,
+      FrequencyEnum.wesu,
+      FrequencyEnum.wesa,
+    ],
+    Biweekly: [
+      FrequencyEnum.a,
+      FrequencyEnum.sa,
+      FrequencyEnum.q,
+      FrequencyEnum.m,
+      FrequencyEnum.w,
+      FrequencyEnum.bw,
+      FrequencyEnum.bwew,
+      FrequencyEnum.bwem,
+    ],
+    Daily: [
+      FrequencyEnum.a,
+      FrequencyEnum.sa,
+      FrequencyEnum.q,
+      FrequencyEnum.m,
+      FrequencyEnum.w,
+      FrequencyEnum.bw,
+      FrequencyEnum.d,
+    ],
+  };
+
+  const FrequencyEnumObject = Object.fromEntries(
+    Object.entries(FrequencyEnum).map(([key, value]) => [value, key])
+  );
+
+  export const getFilteredFrequencyOptions = (
+    frequency: string | undefined,
+    frequencyShort: string | undefined
+  ) => {
+    const allowedFrequencies = frequency
+      ? frequencyMapping[frequency]
+      : Object.values(FrequencyEnum);
+
+    const filteredOptions = allowedFrequencies.map((value) => ({
+      label: value,
+      value: FrequencyEnumObject[value],
+    }));
+    return filteredOptions;
+  };
+
+  export const computeSelectOption = async (
+    result: SeriesModule.IFredSeriesResponse
+  ) => {
+    // Example of an async operation for each series (e.g., fetch additional data)
+    const options = await Promise.all(
+      result.seriess.map(async (series) => {
+        return {
+          label: series.title,
+          value: series.id,
+          description: series.notes,
+        };
+      })
+    );
+    return options;
+  };
 }
 
 export default SeriesModule;

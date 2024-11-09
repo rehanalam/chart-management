@@ -14,7 +14,7 @@ import ObservationSettingsForm from './ObservationSettings';
 import ChartPreview from './ChartPreview';
 import { useGetFredSeriesQuery } from '../../redux/fredSeries/api';
 import { ButtonType } from 'antd/es/button';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
 import dayjs, { Dayjs } from 'dayjs';
 
 export enum ScreenEnum {
@@ -82,9 +82,9 @@ const AddChartModal = ({
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setScreen(ScreenEnum.SEARCH);
     observationsSettingsForm.resetFields();
     seriesSearchForm.resetFields();
+    setScreen(isEdit ? ScreenEnum.SETTINGS : ScreenEnum.SEARCH);
   };
 
   const onScreenChange = (screen: ScreenEnum) => {
@@ -129,11 +129,15 @@ const AddChartModal = ({
     switch (screen) {
       case ScreenEnum.SETTINGS:
         return [
-          <Button type="default" onClick={() => setScreen(ScreenEnum.SEARCH)}>
+          <Button
+            key="settings-back"
+            type="default"
+            onClick={() => setScreen(ScreenEnum.SEARCH)}
+          >
             Back
           </Button>,
           <Button
-            key="submit"
+            key="settings-submit"
             type="primary"
             htmlType="submit"
             form="observation-setting-form"
@@ -172,6 +176,7 @@ const AddChartModal = ({
         onCancel={handleCancel}
         footer={renderFooter()}
         width="700px"
+        destroyOnClose={true}
       >
         {renderScreens()}
       </Modal>

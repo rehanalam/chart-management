@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { observationMockData } from './observations.const';
-import SeriesModule from 'src/utils/modules/series';
+import SeriesModule from '../../utils/modules/series';
 
 const seriesObservationsState: {
   observationChartsData: SeriesModule.IObservationState[];
