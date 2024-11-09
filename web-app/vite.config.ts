@@ -1,4 +1,3 @@
-import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import Checker from 'vite-plugin-checker';
@@ -8,16 +7,7 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   base: '/',
 
-  plugins: [
-    react(),
-    svgr(),
-    sentryVitePlugin({
-      org: 'beebolt',
-      project: 'bb-freight-web',
-      reactComponentAnnotation: { enabled: true },
-    }),
-    Checker({ typescript: true }),
-  ],
+  plugins: [react(), svgr(), Checker({ typescript: true })],
 
   // for dev
   server: {
