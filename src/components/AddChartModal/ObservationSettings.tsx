@@ -10,6 +10,7 @@ import { IObservationsSettingsFormValues, ScreenEnum } from '.';
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';
 import SeriesModule from '../../utils/modules/series';
+import { useEffect } from 'react';
 
 const { RangePicker } = DatePicker;
 
@@ -56,15 +57,23 @@ const ObservationSettingsForm = ({
         onFinish={onFinish}
         name="observation-setting-form"
       >
-        <FormItem name="units" label="Units">
+        <FormItem
+          name="units"
+          label="Units"
+          rules={[{ required: true, message: 'Field Required' }]}
+        >
           <Select
             showSearch
             placeholder="Select Units"
             className="w-full"
             options={unitOptions}
-          ></Select>
+          />
         </FormItem>
-        <FormItem name="frequency" label="Frequency">
+        <FormItem
+          name="frequency"
+          label="Frequency"
+          rules={[{ required: true, message: 'Field Required' }]}
+        >
           {seriesData?.seriess && (
             <Select
               showSearch
@@ -74,13 +83,13 @@ const ObservationSettingsForm = ({
                 seriesData?.seriess?.[0]?.frequency,
                 seriesData?.seriess?.[0]?.frequency_short
               )}
-            ></Select>
+            />
           )}
         </FormItem>
         <Form.Item
           name="observationPeriod"
           label="Observation Period"
-          rules={[{ required: true, message: 'Please select a date range' }]}
+          rules={[{ required: true, message: 'Field Required' }]}
         >
           <RangePicker
             format="YYYY-MM-DD"
@@ -98,7 +107,7 @@ const ObservationSettingsForm = ({
           rules={[
             {
               required: true,
-              message: 'Please enter a limit value',
+              message: 'Field Required',
             },
             {
               type: 'number',
