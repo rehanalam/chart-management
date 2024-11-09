@@ -83,18 +83,18 @@ const ChartComponent = ({ observationData, settings }: IChartProps) => {
           color: '#9ca3af',
         },
         ticks: {
-          color: '#9ca3af', // Y-Axis ticks color
+          color: '#9ca3af',
         },
         grid: {
-          display: false, // Hides Y-Axis grid lines
+          display: false,
         },
       },
       x: {
         ticks: {
-          color: '#9ca3af', // Y-Axis ticks color
+          color: '#9ca3af',
         },
         grid: {
-          display: false, // Hides Y-Axis grid lines
+          display: false,
         },
       },
     },

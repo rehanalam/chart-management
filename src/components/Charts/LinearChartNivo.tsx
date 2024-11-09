@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { ResponsiveLine } from '@nivo/line';
 import SeriesModule from '../../utils/modules/series';
 

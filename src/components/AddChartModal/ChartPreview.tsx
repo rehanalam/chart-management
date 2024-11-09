@@ -55,6 +55,7 @@ const ChartPreview = ({
   onScreenChange,
   onCloseModal,
 }: IChartPreviewProps) => {
+  const dispatch = ReduxModule.useAppDispatch();
   const [chartSettings, setChartSettings] = useState(
     defaultChartData
       ? defaultChartData.chartSettings
@@ -66,8 +67,6 @@ const ChartPreview = ({
           chartType: 'line',
         }
   );
-
-  const dispatch = ReduxModule.useAppDispatch();
 
   const [getObservationsById, { data: observationResp, isLoading }] =
     useLazyGetFredObservationsByIdQuery();
@@ -84,43 +83,7 @@ const ChartPreview = ({
           ],
       });
     } catch {
-      message.success('Error on getting observation data');
-    }
-  };
-
-  const onEditChartClick = async () => {
-    if (defaultChartData && observationResp && formData) {
-      await dispatch(
-        updateObservations({
-          id: defaultChartData?.id,
-          updatedData: {
-            ...observationResp,
-            chartSettings,
-            id: generateRandomId(),
-            seriesId,
-            observationSettings: formData,
-          },
-        })
-      );
-    }
-    onCloseModal?.();
-    onScreenChange(ScreenEnum.SEARCH);
-  };
-
-  const onAddChartClick = async () => {
-    if (observationResp && formData) {
-      await dispatch(
-        addObservations({
-          ...observationResp,
-          chartSettings,
-          id: generateRandomId(),
-          seriesId,
-          observationSettings: formData,
-        })
-      );
-
-      onCloseModal?.();
-      onScreenChange(ScreenEnum.SEARCH);
+      message.error('Error on getting observation data');
     }
   };
 
@@ -148,18 +111,62 @@ const ChartPreview = ({
     }
   }, [formData]);
 
+  const onEditChartClick = async () => {
+    if (defaultChartData && observationResp && formData) {
+      await dispatch(
+        updateObservations({
+          id: defaultChartData?.id,
+          updatedData: {
+            ...observationResp,
+            chartSettings,
+            id: defaultChartData?.id,
+            seriesId,
+            observationSettings: {
+              ...formData,
+              observationPeriod: [
+                dayjs(formData.observationPeriod[0]).format('YYYY-MM-DD'),
+                dayjs(formData.observationPeriod[1]).format('YYYY-MM-DD'),
+              ],
+            },
+          },
+        })
+      );
+    }
+    onCloseModal?.();
+    onScreenChange(ScreenEnum.SEARCH);
+  };
+
+  const onAddChartClick = async () => {
+    if (observationResp && formData) {
+      await dispatch(
+        addObservations({
+          ...observationResp,
+          chartSettings,
+          id: generateRandomId(),
+          seriesId,
+          observationSettings: formData,
+        })
+      );
+
+      onCloseModal?.();
+      onScreenChange(ScreenEnum.SEARCH);
+    }
+  };
+
   const handleSettingsChange = (newSettings: SeriesModule.IChartSettings) => {
     setChartSettings(newSettings);
   };
 
   return (
     <div className="flex flex-col">
+      {/* Settigns */}
       <Typography.Title level={5}>Chart Settings</Typography.Title>
       <ChartSettingsForm
         settings={chartSettings}
         onSettingsChange={handleSettingsChange}
       />
 
+      {/* Preview */}
       <Typography.Title level={5}>Chart Preview</Typography.Title>
       {isLoading && <Spin indicator={<LoadingOutlined spin />} size="large" />}
       {observationResp && (
@@ -171,6 +178,7 @@ const ChartPreview = ({
         </div>
       )}
 
+      {/* Footer */}
       <div className="flex justify-end pt-6 gap-2 ">
         <Button
           type="default"
@@ -178,6 +186,7 @@ const ChartPreview = ({
         >
           Back
         </Button>
+
         {isEdit ? (
           <Button type="primary" onClick={onEditChartClick}>
             Save Chart

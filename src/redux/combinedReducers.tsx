@@ -7,7 +7,6 @@ const combinedReducers = combineReducers({
   seriesObservations,
   fredCategoriesApi: fredCategoriesApi.reducer,
   fredSeriesApi: fredSeriesApi.reducer,
-  // api: api.reducer
 });
 
 export default combinedReducers;

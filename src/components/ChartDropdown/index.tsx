@@ -31,9 +31,7 @@ const ChartDropdown = ({ chartData }: IChartDropdownProps) => {
 
   const handleDuplicateChart = async () => {
     if (chartData?.id) {
-      // Create a new chart object with a new unique ID
       const duplicatedChart = { ...chartData, id: generateRandomId() };
-      // Dispatch the update action to add the duplicated chart to the list
       await dispatch(addObservations(duplicatedChart));
     }
   };
@@ -58,7 +56,7 @@ const ChartDropdown = ({ chartData }: IChartDropdownProps) => {
 
   return (
     <Dropdown menu={{ items }}>
-      <Button>
+      <Button size="small">
         <MoreOutlined className="font-bold" />
       </Button>
     </Dropdown>

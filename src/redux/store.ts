@@ -30,7 +30,6 @@ const persistedReducer = persistReducer<StoreState>(
 );
 
 const middlewares: ThunkMiddleware[] = [
-  // Api.middleware goes here
   fredCategoriesApi.middleware,
   fredSeriesApi.middleware,
 ];
@@ -55,7 +54,7 @@ export const store = configureStore({
 
 // inject store to api
 AxiosModule.Utils.injectStore(store);
-// export const store = makeStore();
+
 export const persistedStore = persistStore(store);
 
 // Infer the type of `store`

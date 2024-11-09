@@ -31,7 +31,7 @@ export interface IObservationsSettingsFormValues {
   frequency: string;
   units: string;
   limit: string;
-  observationPeriod: [Dayjs, Dayjs];
+  observationPeriod: [Dayjs, Dayjs] | [string, string];
 }
 
 interface IAddChartModalProp {
@@ -123,6 +123,14 @@ const AddChartModal = ({
           <SeriesSearchForm
             form={seriesSearchForm}
             onScreenChange={onScreenChange}
+            {...(seriesData && {
+              defaultOptions: [
+                {
+                  label: seriesData?.seriess[0].title,
+                  value: seriesId,
+                },
+              ],
+            })}
           />
         );
     }

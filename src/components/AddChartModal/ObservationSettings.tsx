@@ -10,7 +10,6 @@ import { IObservationsSettingsFormValues, ScreenEnum } from '.';
 import FormItem from 'antd/es/form/FormItem';
 import dayjs from 'dayjs';
 import SeriesModule from '../../utils/modules/series';
-import { generateRandomId } from '../../utils/common';
 
 const { RangePicker } = DatePicker;
 
@@ -29,8 +28,6 @@ interface IObservationSettingsFormProps {
   seriesData?: SeriesModule.IFredSeriesResponse;
   onScreenChange: (screen: ScreenEnum) => void;
 }
-
-const formId = generateRandomId();
 
 const ObservationSettingsForm = ({
   form,

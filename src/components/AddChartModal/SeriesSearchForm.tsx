@@ -5,20 +5,25 @@ import { useCallback, useState } from 'react';
 import { useLazySearchFredSeriesQuery } from '../../redux/rootApis';
 import SeriesModule from '../../utils/modules/series';
 
-interface ISeriesSearchFormProps {
-  form: FormInstance<ISeriesSearchFormValues>;
-  onScreenChange: (screen: ScreenEnum) => void;
-}
-
 interface ISelectOptions {
   label: string;
   value: string | number;
 }
 
-const SeriesSearchForm = ({ form, onScreenChange }: ISeriesSearchFormProps) => {
-  const [options, setOptions] = useState<ISelectOptions[]>([]);
+interface ISeriesSearchFormProps {
+  form: FormInstance<ISeriesSearchFormValues>;
+  onScreenChange: (screen: ScreenEnum) => void;
+  defaultOptions?: ISelectOptions[];
+}
+
+const SeriesSearchForm = ({
+  form,
+  defaultOptions = [],
+  onScreenChange,
+}: ISeriesSearchFormProps) => {
+  const [options, setOptions] = useState<ISelectOptions[]>(defaultOptions);
   const [loading, setLoading] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false); // State to manage error display
+  const [showError, setShowError] = useState<boolean>(false);
 
   const [getFredSeries] = useLazySearchFredSeriesQuery();
 

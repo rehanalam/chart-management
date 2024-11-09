@@ -14,9 +14,9 @@ function App() {
   return (
     <>
       <Provider store={store}>
-        {/* <PersistGate loading={null} persistor={persistedStore}> */}
-        <Dashboard />
-        {/* </PersistGate> */}
+        <PersistGate loading={null} persistor={persistedStore}>
+          <Dashboard />
+        </PersistGate>
       </Provider>
     </>
   );

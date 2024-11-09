@@ -25,6 +25,7 @@ const ChartSettingsForm = ({
   onSettingsChange,
 }: IChartSettingsFormProps) => {
   const [form] = Form.useForm<SeriesModule.IChartSettings>();
+  const chartTypeWatch = Form.useWatch('chartType', form);
 
   useEffect(() => {
     form.setFieldsValue({ ...settings });
@@ -64,7 +65,7 @@ const ChartSettingsForm = ({
       initialValues={settings}
       onValuesChange={handleFormChange}
       className="mb-4 border-b py-6"
-      name={`chart-settings-form-${generateRandomId()}`}
+      name="chart-settings-form"
     >
       <div className="grid grid-cols-2 gap-4">
         <Form.Item label="Chart Title" name="title">
@@ -79,12 +80,14 @@ const ChartSettingsForm = ({
         <Form.Item label="Line Color" name="lineColor">
           <Input type="color" />
         </Form.Item>
-        <Form.Item label="Line Style" name="lineStyle">
-          <Select options={lineStyleOptions} />
-        </Form.Item>
         <Form.Item label="Chart Type" name="chartType">
           <Select options={chartTypeOptions} />
         </Form.Item>
+        {chartTypeWatch === 'line' && (
+          <Form.Item label="Line Style" name="lineStyle">
+            <Select options={lineStyleOptions} />
+          </Form.Item>
+        )}
       </div>
     </Form>
   );

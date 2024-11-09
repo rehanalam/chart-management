@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Line } from '@ant-design/charts';
 import SeriesModule from '../../utils/modules/series';
 
