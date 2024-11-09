@@ -88,7 +88,7 @@ const ChartPreview = ({
   };
 
   useEffect(() => {
-    if (formData) {
+    if (formData && Object.keys(formData).length > 0 && seriesId) {
       const { observationPeriod, ...otherValues } = formData;
       // Extract start and end dates from the form
       const observationStart = observationPeriod
