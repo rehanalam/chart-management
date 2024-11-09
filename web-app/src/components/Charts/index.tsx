@@ -106,20 +106,20 @@ const ChartComponent = ({ observationData, settings }: IChartProps) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full height-[300px]">
       {settings.chartType === 'line' ? (
         <Line
           data={chartData}
           options={chartOptions}
           width="100%"
-          height="100%"
+          height="75%"
         />
       ) : (
         <Bar
           data={chartData}
           options={chartOptions}
           width="100%"
-          height="100%"
+          height="75%"
         />
       )}
     </div>

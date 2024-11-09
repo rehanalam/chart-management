@@ -175,7 +175,9 @@ const AddChartModal = ({
   return (
     <>
       {isEdit ? (
-        <Typography.Text onClick={showModal}>Edit Chart</Typography.Text>
+        <Typography.Text className="w-full" onClick={showModal}>
+          Edit Chart
+        </Typography.Text>
       ) : (
         <Button type="primary" onClick={showModal}>
           Create Chart
