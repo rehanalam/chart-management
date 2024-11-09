@@ -6,9 +6,11 @@
       "proxy-server"
     ],
     "scripts": {
-      "dev:chart": "yarn workspace web-app dev",
-      "dev:proxy": "yarn workspace proxy-server dev",
-      "dev": "concurrently \"yarn dev:chart\" \"yarn dev:proxy\""
+        "dev:chart-management": "yarn workspace chart-management dev",
+        "build:chart-management": "yarn workspace chart-management build",
+        "lint:chart-management": "yarn workspace chart-management lint",
+        "dev:proxy-server": "yarn workspace proxy-server start",
+        "start": "concurrently \"yarn dev:chart-management\" \"yarn dev:proxy-server\""    
     },
     "devDependencies": {
       "concurrently": "^8.2.0"
