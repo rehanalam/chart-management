@@ -23,7 +23,7 @@ import ReduxModule from '../../utils/modules/redux';
 import { addObservations, updateObservations } from '../../redux/rootSlices';
 import ChartSettingsForm from './ChartSettingsForm';
 import ChartComponent from '../Charts';
-import { generateRandomId } from '../../utils/common';
+import { dateFormat, generateRandomId } from '../../utils/common';
 import SeriesModule from '../../utils/modules/series';
 
 ChartJS.register(
@@ -92,10 +92,10 @@ const ChartPreview = ({
       const { observationPeriod, ...otherValues } = formData;
       // Extract start and end dates from the form
       const observationStart = observationPeriod
-        ? dayjs(observationPeriod[0]).format('YYYY-MM-DD')
+        ? dayjs(observationPeriod[0]).format(dateFormat)
         : DEFAULT_OBSERVATION_START;
       const observationEnd = observationPeriod
-        ? dayjs(observationPeriod[1]).format('YYYY-MM-DD')
+        ? dayjs(observationPeriod[1]).format(dateFormat)
         : DEFAULT_OBSERVATION_END;
 
       if (seriesId) {
@@ -124,8 +124,8 @@ const ChartPreview = ({
             observationSettings: {
               ...formData,
               observationPeriod: [
-                dayjs(formData.observationPeriod[0]).format('YYYY-MM-DD'),
-                dayjs(formData.observationPeriod[1]).format('YYYY-MM-DD'),
+                dayjs(formData.observationPeriod[0]).format(dateFormat),
+                dayjs(formData.observationPeriod[1]).format(dateFormat),
               ],
             },
           },
@@ -147,8 +147,8 @@ const ChartPreview = ({
           observationSettings: {
             ...formData,
             observationPeriod: [
-              dayjs(formData.observationPeriod[0]).format('YYYY-MM-DD'),
-              dayjs(formData.observationPeriod[1]).format('YYYY-MM-DD'),
+              dayjs(formData.observationPeriod[0]).format(dateFormat),
+              dayjs(formData.observationPeriod[1]).format(dateFormat),
             ],
           },
         })
