@@ -144,7 +144,13 @@ const ChartPreview = ({
           chartSettings,
           id: generateRandomId(),
           seriesId,
-          observationSettings: formData,
+          observationSettings: {
+            ...formData,
+            observationPeriod: [
+              dayjs(formData.observationPeriod[0]).format('YYYY-MM-DD'),
+              dayjs(formData.observationPeriod[1]).format('YYYY-MM-DD'),
+            ],
+          },
         })
       );
 

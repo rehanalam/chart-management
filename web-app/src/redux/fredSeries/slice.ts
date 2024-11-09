@@ -5,7 +5,7 @@ import SeriesModule from '../../utils/modules/series';
 const seriesObservationsState: {
   observationChartsData: SeriesModule.IObservationState[];
 } = {
-  observationChartsData: [observationMockData],
+  observationChartsData: observationMockData,
 };
 
 export const seriesObservationsSlice = createSlice({

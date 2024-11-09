@@ -5,7 +5,7 @@ namespace SeriesModule {
     title: string;
     yAxisLabel: string;
     lineColor: string;
-    lineStyle: string;
+    lineStyle?: string;
     chartType: string;
   }
   export interface ISeries {
@@ -72,7 +72,7 @@ namespace SeriesModule {
     seriesId: string;
     frequency: string;
     units: string;
-    limit: string;
+    limit: number;
     observationStart: string;
     observationEnd: string;
   }

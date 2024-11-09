@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import dayjs from 'dayjs';
 import SeriesModule from '../../utils/modules/series';
+import moment from 'moment';
 
 // Register the necessary components
 ChartJS.register(
@@ -31,11 +32,15 @@ interface IChartProps {
   settings: SeriesModule.IChartSettings;
 }
 
+var formatDate = (dateString: string) => {
+  return dayjs(dateString).format('YYYY');
+};
+
 const ChartComponent = ({ observationData, settings }: IChartProps) => {
   const dataFromAPI = useMemo(
     () =>
       observationData.observations.map(({ date, value }) => ({
-        date,
+        date: formatDate(date),
         value,
       })),
     [observationData.observations]
@@ -50,7 +55,7 @@ const ChartComponent = ({ observationData, settings }: IChartProps) => {
   );
 
   const chartData = {
-    labels: dataFromAPI.map((item) => dayjs(item.date).year()),
+    labels: dataFromAPI.map((item) => item.date),
     datasets: [
       {
         label: settings.title,
@@ -101,11 +106,21 @@ const ChartComponent = ({ observationData, settings }: IChartProps) => {
   };
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {settings.chartType === 'line' ? (
-        <Line data={chartData} options={chartOptions} />
+        <Line
+          data={chartData}
+          options={chartOptions}
+          width="100%"
+          height="100%"
+        />
       ) : (
-        <Bar data={chartData} options={chartOptions} />
+        <Bar
+          data={chartData}
+          options={chartOptions}
+          width="100%"
+          height="100%"
+        />
       )}
     </div>
   );

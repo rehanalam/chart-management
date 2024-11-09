@@ -30,7 +30,7 @@ export interface ISeriesSearchFormValues {
 export interface IObservationsSettingsFormValues {
   frequency: string;
   units: string;
-  limit: string;
+  limit: number;
   observationPeriod: [Dayjs, Dayjs] | [string, string];
 }
 
