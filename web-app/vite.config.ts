@@ -4,7 +4,7 @@ import Checker from 'vite-plugin-checker';
 import svgr from 'vite-plugin-svgr';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(() => ({
   base: '/',
 
   plugins: [react(), svgr(), Checker({ typescript: true })],
@@ -32,4 +32,9 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-});
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: 'src/setupTests.js',
+  },
+}));

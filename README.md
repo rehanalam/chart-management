@@ -61,6 +61,12 @@ This command uses `concurrently` to start:
   yarn build:web-app
   ```
 
+- **Build**: Run unit test
+
+  ```bash
+  yarn test:web-app
+  ```
+
 ### Dependencies
 
 Key libraries:
@@ -125,6 +131,7 @@ The server is set up to run on port 4000 by default, but you can adjust this in 
 | `yarn dev:web-app`      | Runs the React app only                  |
 | `yarn dev:proxy-server` | Runs the proxy server only               |
 | `yarn build:web-app`    | Builds the React app                     |
+| `yarn test:web-app`     | Run the React app unit test              |
 
 ---
 

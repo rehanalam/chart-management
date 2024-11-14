@@ -1,19 +1,19 @@
 {
-    "name": "my-monorepo",
-    "private": true,
-    "workspaces": [
-      "web-app",
-      "proxy-server"
-    ],
-    "scripts": {
-        "dev:web-app": "yarn workspace web-app dev",
-        "build:web-app": "yarn workspace web-app build",
-        "lint:web-app": "yarn workspace web-app lint",
-        "dev:proxy-server": "yarn workspace proxy-server dev",
-        "start": "concurrently \"yarn dev:web-app\" \"yarn dev:proxy-server\""    
-    },
-    "devDependencies": {
-      "concurrently": "^8.2.0"
-    }
+  "name": "my-monorepo",
+  "private": true,
+  "workspaces": [
+    "web-app",
+    "proxy-server"
+  ],
+  "scripts": {
+    "dev:web-app": "yarn workspace web-app dev",
+    "build:web-app": "yarn workspace web-app build",
+    "lint:web-app": "yarn workspace web-app lint",
+    "dev:proxy-server": "yarn workspace proxy-server dev",
+    "test:web-app": "yarn workspace web-app vitest",
+    "start": "concurrently \"yarn dev:web-app\" \"yarn dev:proxy-server\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
   }
-  
+}
